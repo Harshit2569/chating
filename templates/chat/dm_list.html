@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Messages - Chat App{% endblock %}
+
+{% block content %}
+<h2>Direct Messages</h2>
+
+<div class="card">
+    <a href="{% url 'chat:user_list' %}" class="btn">Start New Conversation</a>
+</div>
+
+{% if dms %}
+<div class="card">
+    <h3>Your Conversations</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>User</th>
+                <th>Last Message</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for dm in dms %}
+            <tr>
+                <td>
+                    <strong>
+                        {% if dm.user1 == user %}
+                            {{ dm.user2.username }}
+                        {% else %}
+                            {{ dm.user1.username }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>
+                    {% if dm.messages.all %}
+                        {{ dm.messages.last.content|truncatewords:10 }}
+                    {% else %}
+                        No messages yet
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'chat:dm_detail' dm.id %}" class="btn">Open</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% else %}
+<div class="card">
+    <p>No conversations yet. <a href="{% url 'chat:user_list' %}">Start a new conversation</a></p>
+</div>
+{% endif %}
+{% endblock %}

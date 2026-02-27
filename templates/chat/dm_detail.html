@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+
+{% block title %}Chat with {{ other_user.username }} - Chat App{% endblock %}
+
+{% block extra_css %}
+<style>
+    .chat-container {
+        display: flex;
+        height: 600px;
+        gap: 1rem;
+        margin: 2rem 0;
+    }
+
+    .chat-main {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        background: white;
+        border-radius: 4px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .chat-header {
+        padding: 1rem;
+        border-bottom: 1px solid #ddd;
+        background: #f9f9f9;
+    }
+
+    .messages-container {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        border-bottom: 1px solid #ddd;
+    }
+
+    .message {
+        margin-bottom: 1rem;
+        padding: 0.75rem;
+        background: #f9f9f9;
+        border-radius: 4px;
+        max-width: 70%;
+    }
+
+    .message.own {
+        background: #d4edda;
+        text-align: right;
+        margin-left: auto;
+    }
+
+    .message-header {
+        font-weight: 600;
+        font-size: 0.9rem;
+        color: #2c3e50;
+        margin-bottom: 0.25rem;
+    }
+
+    .message-timestamp {
+        font-size: 0.8rem;
+        color: #7f8c8d;
+    }
+
+    .input-area {
+        padding: 1rem;
+        display: flex;
+        gap: 0.5rem;
+    }
+
+    .input-area input {
+        flex: 1;
+        padding: 0.75rem;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 1rem;
+    }
+
+    .input-area button {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .typing-indicator {
+        font-style: italic;
+        color: #7f8c8d;
+        font-size: 0.9rem;
+        padding: 0.5rem;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="chat-container">
+    <div class="chat-main">
+        <div class="chat-header">
+            <h2 style="margin: 0;">{{ other_user.get_full_name|default:other_user.username }}</h2>
+        </div>
+
+        <div class="messages-container" id="messages">
+            {% for message in messages %}
+            <div class="message {% if message.sender == user %}own{% endif %}">
+                <div class="message-header">
+                    {{ message.sender.username }}
+                    <span class="message-timestamp">{{ message.created_at|date:"H:i" }}</span>
+                </div>
+                <div>{{ message.content }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div id="typing-indicator" class="typing-indicator" style="display: none;"></div>
+
+        <div class="input-area">
+            <input type="text" id="messageInput" placeholder="Type a message...">
+            <button onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dmId = {{ dm.id }};
+    const userId = {{ user.id }};
+    const otherUserId = {{ other_user.id }};
+    const username = "{{ user.username }}";
+    const wsPath = `/ws/chat/dm/${dmId}/`;
+    const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+    const chatSocket = new WebSocket(wsProtocol + '//' + window.location.host + wsPath);
+
+    chatSocket.onopen = function(e) {
+        console.log('WebSocket connection established');
+    };
+
+    chatSocket.onmessage = function(e) {
+        const data = JSON.parse(e.data);
+
+        if (data.type === 'chat_message') {
+            addMessage(data.username, data.message, data.user_id === userId);
+        } else if (data.type === 'typing_indicator') {
+            handleTypingIndicator(data);
+        }
+    };
+
+    chatSocket.onclose = function(e) {
+        console.log('WebSocket connection closed');
+    };
+
+    function sendMessage() {
+        const input = document.getElementById('messageInput');
+        const message = input.value.trim();
+
+        if (message === '') return;
+
+        chatSocket.send(JSON.stringify({
+            'type': 'chat_message',
+            'message': message
+        }));
+
+        input.value = '';
+        input.focus();
+
+        // Stop typing indicator
+        chatSocket.send(JSON.stringify({
+            'type': 'typing',
+            'is_typing': false
+        }));
+    }
+
+    function addMessage(sender, message, isOwn) {
+        const messagesDiv = document.getElementById('messages');
+        const messageEl = document.createElement('div');
+        messageEl.className = 'message' + (isOwn ? ' own' : '');
+
+        const now = new Date();
+        const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
+
+        messageEl.innerHTML = `
+            <div class="message-header">
+                ${sender}
+                <span class="message-timestamp">${time}</span>
+            </div>
+            <div>${escapeHtml(message)}</div>
+        `;
+
+        messagesDiv.appendChild(messageEl);
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+
+    function handleTypingIndicator(data) {
+        const indicator = document.getElementById('typing-indicator');
+        if (data.is_typing && data.user_id !== userId) {
+            indicator.textContent = `${data.username} is typing...`;
+            indicator.style.display = 'block';
+        } else {
+            indicator.style.display = 'none';
+        }
+    }
+
+    function escapeHtml(text) {
+        const map = {
+            '&': '&amp;',
+            '<': '&lt;',
+            '>': '&gt;',
+            '"': '&quot;',
+            "'": '&#039;'
+        };
+        return text.replace(/[&<>"']/g, m => map[m]);
+    }
+
+    // Typing indicator
+    let typingTimeout;
+    document.getElementById('messageInput').addEventListener('keydown', function() {
+        chatSocket.send(JSON.stringify({
+            'type': 'typing',
+            'is_typing': true
+        }));
+
+        clearTimeout(typingTimeout);
+        typingTimeout = setTimeout(function() {
+            chatSocket.send(JSON.stringify({
+                'type': 'typing',
+                'is_typing': false
+            }));
+        }, 1000);
+    });
+
+    // Send message on Enter
+    document.getElementById('messageInput').addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            sendMessage();
+        }
+    });
+
+    // Scroll to bottom on load
+    window.addEventListener('load', function() {
+        const messagesDiv = document.getElementById('messages');
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    });
+</script>
+{% endblock %}

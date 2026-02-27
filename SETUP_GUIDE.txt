@@ -1,0 +1,343 @@
+================================================================================
+DJANGO REAL-TIME CHAT APPLICATION - SETUP GUIDE
+================================================================================
+
+PROJECT LOCATION: d:\company\chats\
+
+This is a complete, production-ready real-time chat application with the
+following features:
+  ✓ Group Chat Rooms
+  ✓ Direct Messaging
+  ✓ Real-time WebSocket Communication
+  ✓ Typing Indicators
+  ✓ Online Status Tracking
+  ✓ User Authentication
+  ✓ Message History
+  ✓ Admin Dashboard
+
+================================================================================
+QUICK START (3 STEPS)
+================================================================================
+
+STEP 1: Install Redis (one-time setup)
+────────────────────────────────────────
+Redis is required for WebSocket communication. Choose one option:
+
+  OPTION A - Windows:
+    1. Download: https://github.com/microsoftarchive/redis/releases
+    2. Extract the zip file
+    3. Run: redis-server.exe
+
+  OPTION B - Windows Subsystem for Linux (WSL2):
+    1. Open PowerShell as Administrator
+    2. Run: wsl
+    3. Run in WSL: sudo apt-get install redis-server
+    4. Run in WSL: redis-server
+
+  OPTION C - Docker:
+    1. Install Docker Desktop
+    2. Run: docker run -d -p 6379:6379 redis:latest
+
+STEP 2: Start Redis
+────────────────────────────────────────
+Keep Redis running in a terminal window:
+  • In Windows: Run redis-server.exe
+  • In WSL: Run redis-server
+  • In Docker: It runs automatically
+
+STEP 3: Run the Chat Application
+────────────────────────────────────────
+In the project folder (d:\company\chats\), run:
+
+  • EASIEST: Double-click run.bat
+  • MANUAL: python manage.py migrate && daphne -b 0.0.0.0 -p 8000 config.asgi:application
+
+Then open your browser: http://localhost:8000
+
+================================================================================
+DEFAULT LOGIN CREDENTIALS
+================================================================================
+
+ADMIN ACCOUNT:
+  Username: admin
+  Password: admin123
+
+TEST ACCOUNTS (auto-created):
+  Username: alice / Password: alice123
+  Username: bob   / Password: bob123
+  Username: charlie / Password: charlie123
+
+ADMIN DASHBOARD: http://localhost:8000/admin
+
+================================================================================
+WHAT'S INCLUDED
+================================================================================
+
+✓ BACKEND:
+  - Django 6.0+ with authentication
+  - Django Channels for WebSocket support
+  - SQLite database (production-ready with PostgreSQL config)
+  - WebSocket consumers for real-time chat
+  - Signal handlers for automatic status tracking
+  - Admin interface for management
+  - Management command for test data setup
+
+✓ FRONTEND:
+  - HTML/Django Templates
+  - Responsive Bootstrap-like CSS
+  - Real-time JavaScript WebSocket client
+  - Chat room interface with member list
+  - Direct message interface
+  - User list for starting conversations
+  - User profile management
+
+✓ FEATURES:
+  - Create and join chat rooms
+  - Send messages in real-time
+  - Start direct messages with other users
+  - See typing indicators
+  - Track online/offline status
+  - View message history
+  - Edit user profile
+  - Admin management interface
+
+================================================================================
+TESTING THE APPLICATION
+================================================================================
+
+AFTER STARTING THE SERVER:
+
+1. OPEN MULTIPLE BROWSER TABS:
+   • Tab 1: http://localhost:8000 (Login as alice)
+   • Tab 2: http://localhost:8000 (Login as bob)
+
+2. TEST GROUP CHAT:
+   • In Tab 1: Go to "Chat Rooms" → Click "General"
+   • In Tab 2: Go to "Chat Rooms" → Click "General"
+   • Send messages from Tab 1 - they appear instantly in Tab 2
+
+3. TEST DIRECT MESSAGE:
+   • In Tab 1: Go to "Users" → Click "Message" next to bob
+   • In Tab 2: Go to "Messages" tab
+   • Send DM from Tab 1 - appears instantly in Tab 2
+
+4. TEST TYPING INDICATORS:
+   • Start typing in the message input
+   • You should see "User is typing..." on the other tab
+
+5. TEST MESSAGE HISTORY:
+   • Send a few messages
+   • Refresh the page
+   • All messages are still there
+
+================================================================================
+FOLDER STRUCTURE
+================================================================================
+
+d:\company\chats\
+│
+├── config/                      # Django project settings
+│   ├── settings.py             # Main configuration
+│   ├── asgi.py                 # WebSocket setup
+│   ├── urls.py                 # URL routing
+│   └── wsgi.py
+│
+├── chat/                        # Chat application
+│   ├── models.py               # ChatRoom, Message, DirectMessage, OnlineStatus
+│   ├── views.py                # HTTP views
+│   ├── consumers.py            # WebSocket handlers
+│   ├── signals.py              # Auto-create user status
+│   ├── admin.py                # Admin interface
+│   ├── urls.py
+│   ├── routing.py              # WebSocket URLs
+│   └── management/commands/
+│       └── setup_test_data.py  # Create test data
+│
+├── users/                       # Authentication
+│   ├── views.py                # Login, signup, profile
+│   ├── forms.py                # Auth forms
+│   └── urls.py
+│
+├── templates/                   # HTML templates
+│   ├── base.html               # Base with styling
+│   ├── chat/                    # Chat templates
+│   └── users/                   # Auth templates
+│
+├── db.sqlite3                   # Database (auto-created)
+├── manage.py                    # Django management
+├── requirements.txt             # Python packages
+├── run.bat                      # Windows startup script
+├── README.md                    # Full documentation
+└── SETUP_GUIDE.txt             # This file
+
+================================================================================
+TROUBLESHOOTING
+================================================================================
+
+PROBLEM: "WebSocket connection failed"
+SOLUTION:
+  1. Make sure Redis is running (check port 6379)
+  2. Restart both Redis and Django
+  3. Check browser console (F12) for detailed error
+
+PROBLEM: "Address already in use" on port 8000
+SOLUTION:
+  • Find the process: netstat -ano | findstr :8000
+  • Kill it: taskkill /PID <number> /F
+  • Or use different port: daphne -b 0.0.0.0 -p 8001 config.asgi:application
+
+PROBLEM: "channel_layer not configured"
+SOLUTION:
+  • Verify Redis is running and accessible on localhost:6379
+  • Check CHANNEL_LAYERS in config/settings.py
+
+PROBLEM: Database errors after migration
+SOLUTION:
+  • Delete db.sqlite3
+  • Run: python manage.py migrate
+  • Run: python manage.py setup_test_data
+
+PROBLEM: "Command not found: daphne"
+SOLUTION:
+  • Run: pip install -r requirements.txt
+  • Make sure packages are installed in current Python environment
+
+================================================================================
+USEFUL COMMANDS
+================================================================================
+
+# Start the server
+daphne -b 0.0.0.0 -p 8000 config.asgi:application
+
+# Create superuser (admin)
+python manage.py createsuperuser
+
+# Run migrations
+python manage.py migrate
+
+# Create/reset test data
+python manage.py setup_test_data
+
+# Access Django shell
+python manage.py shell
+
+# Collect static files (production)
+python manage.py collectstatic
+
+# Check for issues
+python manage.py check
+
+================================================================================
+PRODUCTION DEPLOYMENT
+================================================================================
+
+To deploy to production:
+
+1. Set DEBUG = False in settings.py
+2. Update ALLOWED_HOSTS with your domain
+3. Switch to PostgreSQL database
+4. Set environment variables for secrets
+5. Install and configure Gunicorn
+6. Set up Redis as a production service
+7. Configure Nginx as reverse proxy
+8. Install SSL certificates (Let's Encrypt)
+9. Run: python manage.py collectstatic
+10. Use systemd to manage services
+
+See README.md for detailed deployment instructions.
+
+================================================================================
+DATABASE CONFIGURATION
+================================================================================
+
+DEVELOPMENT (Current - SQLite):
+  Easy to setup, no additional server needed
+  Located at: d:\company\chats\db.sqlite3
+  Good for development and testing
+
+PRODUCTION (PostgreSQL):
+  To switch, edit config/settings.py DATABASES:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.postgresql',
+            'NAME': 'your_db_name',
+            'USER': 'your_db_user',
+            'PASSWORD': 'your_password',
+            'HOST': 'localhost',
+            'PORT': '5432',
+        }
+    }
+
+================================================================================
+API ENDPOINTS
+================================================================================
+
+Authentication:
+  POST   /auth/signup/              Register new user
+  POST   /auth/login/               Login
+  GET    /auth/logout/              Logout
+  GET    /auth/profile/             View/edit profile
+
+Chat:
+  GET    /chat/                     List rooms & join
+  GET    /chat/room/{id}/           Open chat room
+  POST   /chat/create/              Create new room
+  POST   /chat/join/{id}/           Join room
+  GET    /chat/dm/                  List direct messages
+  GET    /chat/dm/{id}/             Open DM
+  GET    /chat/users/               List all users
+  GET    /chat/api/online/{id}/     Get user online status
+
+WebSocket:
+  WS     /ws/chat/room/{id}/        Group chat WebSocket
+  WS     /ws/chat/dm/{id}/          DM WebSocket
+
+================================================================================
+KEY TECHNOLOGIES
+================================================================================
+
+Backend:
+  • Django 6.0+ - Web framework
+  • Django Channels - WebSocket support
+  • Python 3.8+ - Programming language
+
+Real-time:
+  • WebSockets - Bi-directional communication
+  • Redis - Message broker and channel layer
+  • Daphne - ASGI server
+
+Database:
+  • SQLite - Development
+  • PostgreSQL - Production ready
+
+Frontend:
+  • HTML5 - Markup
+  • CSS3 - Styling
+  • Vanilla JavaScript - WebSocket client
+
+================================================================================
+SUPPORT & DOCUMENTATION
+================================================================================
+
+For detailed information:
+  • See: README.md (in project root)
+  • Django docs: https://docs.djangoproject.com/
+  • Channels docs: https://channels.readthedocs.io/
+  • Redis docs: https://redis.io/documentation
+
+Common Issues: See TROUBLESHOOTING section above
+
+================================================================================
+GETTING STARTED NOW
+================================================================================
+
+1. Make sure Redis is running
+2. Open command prompt in project folder
+3. Run: run.bat (or manually run the daphne command)
+4. Open: http://localhost:8000
+5. Login with admin / admin123
+6. Create chat rooms and invite users!
+
+Happy Chatting! 🚀
+
+================================================================================

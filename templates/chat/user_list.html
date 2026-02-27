@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Users - Chat App{% endblock %}
+
+{% block content %}
+<h2>Users</h2>
+
+<div class="card">
+    <h3>All Users</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for user in users %}
+            <tr>
+                <td><strong>{{ user.username }}</strong></td>
+                <td>{{ user.get_full_name|default:"-" }}</td>
+                <td>
+                    <a href="{% url 'chat:start_dm' user.id %}" class="btn">Message</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock %}
