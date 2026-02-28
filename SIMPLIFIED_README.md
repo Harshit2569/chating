@@ -2,15 +2,7 @@
 
 All changes have been successfully applied! Your chat application is now simplified with the following features:
 
-## WHAT'S BEEN CHANGED
 
-### Removed:
-- ❌ User authentication (login/signup)
-- ❌ User profiles and account management
-- ❌ Direct messaging (DM)
-- ❌ Online status tracking
-- ❌ Typing indicators
-- ❌ Admin user requirements
 
 ### Kept & Simplified:
 - ✓ **Room-based chat** - Enter any username, join a room, chat in real-time
@@ -183,19 +175,6 @@ Then open: **http://localhost:8000**
 
 That's it! No login, no signup, just chat. 🚀
 
----
-
-## WHAT WAS REMOVED (Reference)
-
-If you ever need to restore these features, they were removed from:
-- `users/` app (completely unused now, can be deleted)
-- Login/signup/profile views and templates
-- User authentication system
-- Django User model foreign keys
-- OnlineStatus tracking
-- DirectMessage model
-- Typing indicators
-- All auth middleware
 
 The simplified version focuses on **group chat rooms only** with **session-based usernames**.
 

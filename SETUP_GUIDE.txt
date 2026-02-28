@@ -58,15 +58,6 @@ Then open your browser: http://localhost:8000
 DEFAULT LOGIN CREDENTIALS
 ================================================================================
 
-ADMIN ACCOUNT:
-  Username: admin
-  Password: admin123
-
-TEST ACCOUNTS (auto-created):
-  Username: alice / Password: alice123
-  Username: bob   / Password: bob123
-  Username: charlie / Password: charlie123
-
 ADMIN DASHBOARD: http://localhost:8000/admin
 
 ================================================================================
@@ -272,11 +263,7 @@ PRODUCTION (PostgreSQL):
 API ENDPOINTS
 ================================================================================
 
-Authentication:
-  POST   /auth/signup/              Register new user
-  POST   /auth/login/               Login
-  GET    /auth/logout/              Logout
-  GET    /auth/profile/             View/edit profile
+
 
 Chat:
   GET    /chat/                     List rooms & join
