@@ -1,255 +1,416 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat Rooms</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Chat Rooms</title>
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
+<style>
 
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+}
 
-        .navbar h1 {
-            font-size: 1.5rem;
-        }
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:#f5f5f5;
+color:#333;
+}
 
-        .user-info {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
+/* NAVBAR */
 
-        .logout-btn {
-            padding: 0.5rem 1rem;
-            background: rgba(255,255,255,0.2);
-            color: white;
-            border: 1px solid white;
-            border-radius: 4px;
-            cursor: pointer;
-            text-decoration: none;
-            transition: background 0.3s;
-        }
+.navbar{
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+color:white;
+padding:1rem 2rem;
+display:flex;
+justify-content:space-between;
+align-items:center;
+flex-wrap:wrap;
+gap:10px;
+}
 
-        .logout-btn:hover {
-            background: rgba(255,255,255,0.3);
-        }
+.navbar h1{
+font-size:1.5rem;
+}
 
-        .container {
-            max-width: 1000px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
+.user-info{
+display:flex;
+gap:1rem;
+align-items:center;
+flex-wrap:wrap;
+}
 
-        .header {
-            margin-bottom: 2rem;
-        }
+.logout-btn{
+padding:0.5rem 1rem;
+background:rgba(255,255,255,0.2);
+color:white;
+border:1px solid white;
+border-radius:4px;
+cursor:pointer;
+transition:background .3s;
+}
 
-        .header h2 {
-            margin-bottom: 0.5rem;
-            color: #333;
-        }
+.logout-btn:hover{
+background:rgba(255,255,255,0.3);
+}
 
-        .username {
-            color: #666;
-            font-size: 0.95rem;
-        }
+/* CONTAINER */
 
-        .card {
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
+.container{
+max-width:1000px;
+margin:2rem auto;
+padding:0 1rem;
+}
 
-        .card h3 {
-            margin-bottom: 1rem;
-            color: #667eea;
-            font-size: 1.2rem;
-        }
+.header{
+margin-bottom:2rem;
+}
 
-        .form-group {
-            margin-bottom: 1rem;
-        }
+.header h2{
+margin-bottom:.5rem;
+}
 
-        label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-        }
+.username{
+color:#666;
+font-size:.95rem;
+}
 
-        input[type="text"],
-        textarea {
-            width: 100%;
-            max-width: 500px;
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-family: inherit;
-            font-size: 1rem;
-        }
+/* CARD */
 
-        textarea {
-            resize: vertical;
-            min-height: 80px;
-        }
+.card{
+background:white;
+border-radius:8px;
+box-shadow:0 1px 3px rgba(0,0,0,0.1);
+padding:1.5rem;
+margin-bottom:2rem;
+}
 
-        button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
-            padding: 0.75rem 1.5rem;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: transform 0.2s;
-        }
+.card h3{
+margin-bottom:1rem;
+color:#667eea;
+font-size:1.2rem;
+}
 
-        button:hover {
-            transform: translateY(-2px);
-        }
+/* FORM */
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
+.form-group{
+margin-bottom:1rem;
+}
 
-        th {
-            background: #f0f4ff;
-            padding: 1rem;
-            text-align: left;
-            font-weight: 600;
-            color: #667eea;
-            border-bottom: 2px solid #ddd;
-        }
+label{
+display:block;
+margin-bottom:.5rem;
+font-weight:500;
+}
 
-        td {
-            padding: 1rem;
-            border-bottom: 1px solid #eee;
-        }
+input[type="text"],
+textarea{
+width:100%;
+max-width:500px;
+padding:.75rem;
+border:1px solid #ddd;
+border-radius:4px;
+font-family:inherit;
+font-size:1rem;
+}
 
-        tr:hover {
-            background: #f9f9f9;
-        }
+textarea{
+resize:vertical;
+min-height:80px;
+}
 
-        .room-name {
-            font-weight: 600;
-            color: #667eea;
-        }
+button{
+background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);
+color:white;
+border:none;
+padding:.75rem 1.5rem;
+border-radius:4px;
+cursor:pointer;
+font-size:1rem;
+}
 
-        .room-description {
-            font-size: 0.9rem;
-            color: #666;
-            margin: 0.25rem 0;
-        }
+button:hover{
+transform:translateY(-2px);
+}
 
-        .actions {
-            text-align: right;
-        }
+/* TABLE */
 
-        .open-btn {
-            padding: 0.5rem 1rem;
-            background: #667eea;
-            color: white;
-            text-decoration: none;
-            border-radius: 4px;
-            display: inline-block;
-            transition: background 0.3s;
-        }
+table{
+width:100%;
+border-collapse:collapse;
+}
 
-        .open-btn:hover {
-            background: #764ba2;
-        }
+th{
+background:#f0f4ff;
+padding:1rem;
+text-align:left;
+font-weight:600;
+color:#667eea;
+border-bottom:2px solid #ddd;
+}
 
-        .empty-message {
-            text-align: center;
-            padding: 2rem;
-            color: #666;
-        }
-    </style>
+td{
+padding:1rem;
+border-bottom:1px solid #eee;
+}
+
+tr:hover{
+background:#f9f9f9;
+}
+
+.room-name{
+font-weight:600;
+color:#667eea;
+}
+
+.room-description{
+font-size:.9rem;
+color:#666;
+margin:.25rem 0;
+}
+
+.actions{
+text-align:right;
+}
+
+.open-btn{
+padding:.5rem 1rem;
+background:#667eea;
+color:white;
+text-decoration:none;
+border-radius:4px;
+display:inline-block;
+}
+
+.open-btn:hover{
+background:#764ba2;
+}
+
+.empty-message{
+text-align:center;
+padding:2rem;
+color:#666;
+}
+
+/* TABLET */
+
+@media (max-width:768px){
+
+.container{
+margin:1rem auto;
+}
+
+.card{
+padding:1rem;
+}
+
+table{
+font-size:14px;
+}
+
+input[type="text"],textarea{
+max-width:100%;
+}
+
+}
+
+/* MOBILE */
+
+@media (max-width:600px){
+
+table,
+thead,
+tbody,
+th,
+td,
+tr{
+display:block;
+width:100%;
+}
+
+thead{
+display:none;
+}
+
+tr{
+background:white;
+margin-bottom:1rem;
+border-radius:8px;
+box-shadow:0 1px 3px rgba(0,0,0,0.1);
+padding:10px;
+}
+
+td{
+border:none;
+padding:8px 0;
+display:flex;
+justify-content:space-between;
+}
+
+td::before{
+font-weight:600;
+color:#667eea;
+}
+
+td:nth-child(1)::before{content:"Room";}
+td:nth-child(2)::before{content:"Description";}
+td:nth-child(3)::before{content:"Created By";}
+td:nth-child(4)::before{content:"Action";}
+
+.actions{
+text-align:left;
+}
+
+.open-btn{
+padding:6px 10px;
+font-size:14px;
+}
+
+}
+
+</style>
 </head>
+
 <body>
-    <nav class="navbar">
-        <h1>💬 Chat App</h1>
-        <div class="user-info">
-            <span>👤 {{ username }}</span>
-            <form method="get" action="{% url 'chat:logout_user' %}" style="display: inline;">
-                <button type="submit" class="logout-btn">Change User</button>
-            </form>
-        </div>
-    </nav>
 
-    <div class="container">
-        <div class="header">
-            <h2>Chat Rooms</h2>
-            <p class="username">Logged in as: <strong>{{ username }}</strong></p>
-        </div>
+<nav class="navbar">
 
-        <div class="card">
-            <h3>➕ Create a New Room</h3>
-            <form method="post" action="{% url 'chat:create_room' %}">
-                {% csrf_token %}
-                <div class="form-group">
-                    <label for="name">Room Name</label>
-                    <input type="text" id="name" name="name" placeholder="e.g., General, Random, Tech Talk" required>
-                </div>
-                {% comment %} <div class="form-group">
-                    <label for="description">Description (optional)</label>
-                    <textarea id="description" name="description" placeholder="What's this room about?"></textarea>
-                </div> {% endcomment %}
-                <button type="submit">Create Room</button>
-            </form>
-        </div>
+<h1>💬 Chat App</h1>
 
-        <div class="card">
-            <h3> Available Rooms</h3>
-            {% if rooms %}
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Room</th>
-                            <th>Description</th>
-                            <th>Created By</th>
-                            <th class="actions">Action</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for room in rooms %}
-                        <tr>
-                            <td><span class="room-name">{{ room.name }}</span></td>
-                            <td><span class="room-description">{{ room.description|default:"No description" }}</span></td>
-                            <td>{{ room.created_by_name }}</td>
-                            <td class="actions">
-                                <a href="{% url 'chat:room' room.id %}" class="open-btn">Open</a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            {% else %}
-                <div class="empty-message">
-                    <p>No chat rooms available yet. Create one to get started!</p>
-                </div>
-            {% endif %}
-        </div>
-    </div>
+<div class="user-info">
+
+<span>👤 {{ username }}</span>
+
+<form method="get" action="{% url 'chat:logout_user' %}" style="display:inline;">
+<button type="submit" class="logout-btn">Change User</button>
+</form>
+
+</div>
+
+</nav>
+
+
+<div class="container">
+
+<div class="header">
+
+<h2>Chat Rooms</h2>
+
+<p class="username">
+Logged in as: <strong>{{ username }}</strong>
+</p>
+
+</div>
+
+
+<div class="card">
+
+<h3>➕ Create a New Room</h3>
+
+<form method="post" action="{% url 'chat:create_room' %}">
+
+{% csrf_token %}
+
+<div class="form-group">
+
+<label for="name">Room Name</label>
+
+<input
+type="text"
+id="name"
+name="name"
+placeholder="e.g., General, Random, Tech Talk"
+required>
+
+</div>
+
+<button type="submit">Create Room</button>
+
+</form>
+
+</div>
+
+
+<div class="card">
+
+<h3>Available Rooms</h3>
+
+{% if rooms %}
+
+<table>
+
+<thead>
+
+<tr>
+<th>Room</th>
+<th>Description</th>
+<th>Created By</th>
+<th class="actions">Action</th>
+</tr>
+
+</thead>
+
+<tbody>
+
+{% for room in rooms %}
+
+<tr>
+
+<td>
+<span class="room-name">
+{{ room.name }}
+</span>
+</td>
+
+<td>
+<span class="room-description">
+{{ room.description|default:"No description" }}
+</span>
+</td>
+
+<td>
+{{ room.created_by_name }}
+</td>
+
+<td class="actions">
+
+<a
+href="{% url 'chat:room' room.id %}"
+class="open-btn">
+
+Open
+
+</a>
+
+</td>
+
+</tr>
+
+{% endfor %}
+
+</tbody>
+
+</table>
+
+{% else %}
+
+<div class="empty-message">
+
+<p>
+No chat rooms available yet.
+Create one to get started!
+</p>
+
+</div>
+
+{% endif %}
+
+</div>
+
+</div>
+
 </body>
 </html>

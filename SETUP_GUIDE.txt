@@ -9,13 +9,8 @@ following features:
   ✓ Group Chat Rooms
   ✓ Direct Messaging
   ✓ Real-time WebSocket Communication
-  ✓ Typing Indicators
-  ✓ Online Status Tracking
-  ✓ User Authentication
-  ✓ Message History
-  ✓ Admin Dashboard
-
-================================================================================
+  
+===============================================================================
 QUICK START (3 STEPS)
 ================================================================================
 
@@ -246,18 +241,7 @@ DEVELOPMENT (Current - SQLite):
   Located at: d:\company\chats\db.sqlite3
   Good for development and testing
 
-PRODUCTION (PostgreSQL):
-  To switch, edit config/settings.py DATABASES:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.postgresql',
-            'NAME': 'your_db_name',
-            'USER': 'your_db_user',
-            'PASSWORD': 'your_password',
-            'HOST': 'localhost',
-            'PORT': '5432',
-        }
-    }
+
 
 ================================================================================
 API ENDPOINTS
