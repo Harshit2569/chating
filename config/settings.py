@@ -25,7 +25,7 @@ DEBUG = True  # change to False after testing
 
 ALLOWED_HOSTS = ['localhost', '127.0.0.1', '[::1]', 'chating-75we.onrender.com','chating-o8gh.onrender.com']
 
-CSRF_TRUSTED_ORIGINS = ['https://chating-75we.onrender.com']
+CSRF_TRUSTED_ORIGINS = ['https://chating-75we.onrender.com', 'https://chating-o8gh.onrender.com']
 
 
 
